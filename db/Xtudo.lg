@@ -1,0 +1,31 @@
+
+                Thu Aug  7 14:39:04 2025
+[2025/08/07@14:39:04.243-0300] P-12208      T-11540 I DBUTIL   : (451)   prostrct create session begin for Joao on CON:. 
+[2025/08/07@14:39:04.244-0300] P-12208      T-11540 I DBUTIL   : (12862) Structure file C:\Xtudo\db\Xtudo.st used to create database with blocksize 4096. 
+[2025/08/07@14:39:04.244-0300] P-12208      T-11540 I DBUTIL   : (334)   prostrct create session end. 
+[2025/08/07@14:39:04.251-0300] P-12208      T-11540 I DBUTIL   : (451)   procopy session begin for Joao on CON:. 
+[2025/08/07@14:39:04.257-0300] P-12208      T-11540 I DBUTIL   : (334)   procopy session end. 
+
+                Thu Aug  7 14:39:04 2025
+[2025/08/07@14:39:04.266-0300] P-12208      T-11540 I DBUTIL   : (451)   procopy get default SQL DBA session begin for Joao on CON:. 
+[2025/08/07@14:39:04.266-0300] P-12208      T-11540 I DBUTIL   : (15321) Before Image Log Initialization at block 0  offset 0. 
+[2025/08/07@14:39:04.271-0300] P-12208      T-11540 I DBUTIL   : (14867) Procopy -newinstance Created a new database GUID. 
+[2025/08/07@14:39:04.272-0300] P-12208      T-11540 I DBUTIL   : (15109) At Database close the number of live transactions is 0. 
+[2025/08/07@14:39:04.272-0300] P-12208      T-11540 I DBUTIL   : (15743) Before Image Log Completion at Block 0 Offset 2617. 
+[2025/08/07@14:39:04.273-0300] P-12208      T-11540 I DBUTIL   : (334)   procopy get default SQL DBA session end. 
+
+                Thu Aug  7 14:39:06 2025
+[2025/08/07@14:39:06.708-0300] P-2176       T-11208 I ABL      : (451)   Single-user session begin for Joao on CON:. 
+[2025/08/07@14:39:06.708-0300] P-2176       T-11208 I ABL      : (15321) Before Image Log Initialization at block 0  offset 2617. 
+[2025/08/07@14:39:06.712-0300] P-2176       T-11208 I ABL      : (7129)  Usr 0 set name to Joao. 
+[2025/08/07@15:53:36.772-0300] P-2176       T-11208 I ABL      : (15109) At Database close the number of live transactions is 0. 
+[2025/08/07@15:53:36.773-0300] P-2176       T-11208 I ABL      : (15743) Before Image Log Completion at Block 22 Offset 6574. 
+[2025/08/07@15:53:36.773-0300] P-2176       T-11208 I ABL      : (334)   Single-user session end. 
+
+                Thu Aug  7 15:53:41 2025
+[2025/08/07@15:53:41.101-0300] P-11648      T-5408  I ABL      : (451)   Single-user session begin for Joao on CON:. 
+[2025/08/07@15:53:41.101-0300] P-11648      T-5408  I ABL      : (15321) Before Image Log Initialization at block 22  offset 6574. 
+[2025/08/07@15:53:41.106-0300] P-11648      T-5408  I ABL      : (7129)  Usr 0 set name to Joao. 
+[2025/08/07@16:39:40.416-0300] P-11648      T-5408  I ABL      : (15109) At Database close the number of live transactions is 0. 
+[2025/08/07@16:39:40.417-0300] P-11648      T-5408  I ABL      : (15743) Before Image Log Completion at Block 29 Offset 5991. 
+[2025/08/07@16:39:40.417-0300] P-11648      T-5408  I ABL      : (334)   Single-user session end. 
