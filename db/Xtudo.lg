@@ -29,3 +29,19 @@
 [2025/08/07@16:39:40.416-0300] P-11648      T-5408  I ABL      : (15109) At Database close the number of live transactions is 0. 
 [2025/08/07@16:39:40.417-0300] P-11648      T-5408  I ABL      : (15743) Before Image Log Completion at Block 29 Offset 5991. 
 [2025/08/07@16:39:40.417-0300] P-11648      T-5408  I ABL      : (334)   Single-user session end. 
+
+                Thu Aug  7 22:04:43 2025
+[2025/08/07@22:04:43.323-0300] P-696        T-12636 I ABL      : (451)   Single-user session begin for Joao on CON:. 
+[2025/08/07@22:04:43.323-0300] P-696        T-12636 I ABL      : (15321) Before Image Log Initialization at block 29  offset 5991. 
+[2025/08/07@22:04:43.328-0300] P-696        T-12636 I ABL      : (7129)  Usr 0 set name to Joao. 
+[2025/08/07@22:43:28.425-0300] P-696        T-12636 I ABL      : (15109) At Database close the number of live transactions is 0. 
+[2025/08/07@22:43:28.425-0300] P-696        T-12636 I ABL      : (15743) Before Image Log Completion at Block 31 Offset 673. 
+[2025/08/07@22:43:28.426-0300] P-696        T-12636 I ABL      : (334)   Single-user session end. 
+
+                Fri Aug  8 11:26:33 2025
+[2025/08/08@11:26:33.234-0300] P-18276      T-18352 I ABL      : (451)   Single-user session begin for Joao on CON:. 
+[2025/08/08@11:26:33.235-0300] P-18276      T-18352 I ABL      : (15321) Before Image Log Initialization at block 31  offset 673. 
+[2025/08/08@11:26:33.251-0300] P-18276      T-18352 I ABL      : (7129)  Usr 0 set name to Joao. 
+[2025/08/08@12:13:42.563-0300] P-18276      T-18352 I ABL      : (15109) At Database close the number of live transactions is 0. 
+[2025/08/08@12:13:42.563-0300] P-18276      T-18352 I ABL      : (15743) Before Image Log Completion at Block 32 Offset 2160. 
+[2025/08/08@12:13:42.564-0300] P-18276      T-18352 I ABL      : (334)   Single-user session end. 
