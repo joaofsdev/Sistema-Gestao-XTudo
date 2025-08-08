@@ -17,6 +17,10 @@ DEFINE BUTTON bt-delitem LABEL "Eliminar".
 
 DEFINE VARIABLE cAction AS CHARACTER NO-UNDO.
 
+DEFINE VARIABLE cbo-CodCliente AS INTEGER NO-UNDO
+    VIEW-AS COMBO-BOX INNER-LINES 5
+    LIST-ITEM-PAIRS "Selecione um cliente", 0.
+
 DEFINE QUERY qPedidos FOR pedidos, clientes, cidades SCROLLING.
 DEFINE QUERY qItens FOR itens, produtos.
 
@@ -43,7 +47,7 @@ DEFINE FRAME f-pedidos
     bt-sair SKIP(1)
     pedidos.CodPedido COLON 20
     pedidos.DataPedido 
-    pedidos.CodCliente COLON 20
+    cbo-CodCliente COLON 20 LABEL "Cliente"
     clientes.NomeCliente NO-LABELS
     clientes.CodEndereco COLON 20
     clientes.CodCidade COLON 20
@@ -57,6 +61,20 @@ DEFINE FRAME f-pedidos
          VIEW-AS DIALOG-BOX TITLE "Pedidos".
 
 ENABLE bitens WITH FRAME f-pedidos.
+
+PROCEDURE piPreencheComboClientes:
+    DEFINE VARIABLE iCodCliente AS INTEGER NO-UNDO.
+    DEFINE VARIABLE cNomeCliente AS CHARACTER NO-UNDO.
+    
+    cbo-CodCliente:LIST-ITEM-PAIRS IN FRAME f-pedidos = "Selecione um cliente,0".
+    
+    FOR EACH clientes NO-LOCK:
+        ASSIGN
+            iCodCliente = clientes.CodCliente
+            cNomeCliente = clientes.NomeCliente.
+        cbo-CodCliente:ADD-LAST(cNomeCliente + " (" + STRING(iCodCliente) + ")", iCodCliente) IN FRAME f-pedidos.
+    END.
+END PROCEDURE.
 
 ON 'choose' OF bt-pri DO:
     GET FIRST qPedidos.
@@ -75,7 +93,7 @@ ON 'choose' OF bt-additem DO:
 
     DEFINE VARIABLE cCaminhoItens AS CHARACTER NO-UNDO INITIAL "c:\Xtudo\itens.p".
     IF SEARCH(cCaminhoItens) = ? THEN DO:
-        MESSAGE "Programa itens.p nï¿½o encontrado no caminho especificado." 
+        MESSAGE "Programa itens.p não encontrado no caminho especificado." 
             VIEW-AS ALERT-BOX ERROR.
         RETURN NO-APPLY.
     END.
@@ -100,13 +118,13 @@ ON 'choose' OF bt-moditem DO:
     IF NOT AVAILABLE pedidos THEN DO:
         MESSAGE "Selecione um pedido antes de modificar itens." 
             VIEW-AS ALERT-BOX ERROR.
-        RETURN NO-APPLY.
+            RETURN NO-APPLY.
     END.
 
     IF bitens:NUM-SELECTED-ROWS IN FRAME f-pedidos = 0 THEN DO:
         MESSAGE "Selecione um item no browse para modificar." 
             VIEW-AS ALERT-BOX ERROR.
-        RETURN NO-APPLY.
+            RETURN NO-APPLY.
     END.
 
     GET CURRENT qItens NO-LOCK.
@@ -115,7 +133,7 @@ ON 'choose' OF bt-moditem DO:
 
         DEFINE VARIABLE cCaminhoItens AS CHARACTER NO-UNDO INITIAL "c:\Xtudo\itens.p".
         IF SEARCH(cCaminhoItens) = ? THEN DO:
-            MESSAGE "Programa itens.p nï¿½o encontrado no caminho especificado." 
+            MESSAGE "Programa itens.p não encontrado no caminho especificado." 
                 VIEW-AS ALERT-BOX ERROR.
             RETURN NO-APPLY.
         END.
@@ -133,9 +151,9 @@ ON 'choose' OF bt-moditem DO:
         END.
     END.
     ELSE DO:
-        MESSAGE "Nenhum item selecionado para modificaï¿½ï¿½o." 
+        MESSAGE "Nenhum item selecionado para modificação." 
             VIEW-AS ALERT-BOX ERROR.
-        RETURN NO-APPLY.
+            RETURN NO-APPLY.
     END.
 END.
 
@@ -146,20 +164,20 @@ ON 'choose' OF bt-delitem DO:
     IF NOT AVAILABLE pedidos THEN DO:
         MESSAGE "Selecione um pedido antes de eliminar itens." 
             VIEW-AS ALERT-BOX ERROR.
-        RETURN NO-APPLY.
+            RETURN NO-APPLY.
     END.
 
     IF bitens:NUM-SELECTED-ROWS IN FRAME f-pedidos = 0 THEN DO:
         MESSAGE "Selecione um item no browse para eliminar." 
             VIEW-AS ALERT-BOX ERROR.
-        RETURN NO-APPLY.
+            RETURN NO-APPLY.
     END.
 
     GET CURRENT qItens NO-LOCK.
     IF AVAILABLE itens THEN DO:
         ASSIGN iCodItem = itens.CodItem.
-        MESSAGE "Confirma a eliminaï¿½ï¿½o do item " iCodItem "?" 
-            UPDATE lConf VIEW-AS ALERT-BOX QUESTION BUTTONS YES-NO TITLE "Eliminaï¿½ï¿½o".
+        MESSAGE "Confirma a eliminação do item " iCodItem "?" 
+            UPDATE lConf VIEW-AS ALERT-BOX QUESTION BUTTONS YES-NO TITLE "Eliminação".
         IF lConf THEN DO:
             DO TRANSACTION:
                 FIND FIRST itens WHERE 
@@ -175,9 +193,9 @@ ON 'choose' OF bt-delitem DO:
         END.
     END.
     ELSE DO:
-        MESSAGE "Nenhum item selecionado para eliminaï¿½ï¿½o." 
+        MESSAGE "Nenhum item selecionado para eliminação." 
             VIEW-AS ALERT-BOX ERROR.
-        RETURN NO-APPLY.
+            RETURN NO-APPLY.
     END.
 END.
 
@@ -207,8 +225,11 @@ ON 'choose' OF bt-add DO:
     RUN piHabilitaBotoes (INPUT FALSE).
     RUN piHabilitaCampos (INPUT TRUE).
     CLEAR FRAME f-pedidos.
-    DISPLAY NEXT-VALUE(NextCodPedido) @ pedidos.CodPedido 
-    TODAY @ pedidos.DataPedido WITH FRAME f-pedidos.
+    ASSIGN cbo-CodCliente:SCREEN-VALUE IN FRAME f-pedidos = "0".
+    DISPLAY 
+        NEXT-VALUE(NextCodPedido) @ pedidos.CodPedido 
+        TODAY @ pedidos.DataPedido 
+        WITH FRAME f-pedidos.
     CLOSE QUERY qItens.
     DISPLAY bitens WITH FRAME f-pedidos.
 END.
@@ -223,8 +244,8 @@ END.
 
 ON 'choose' OF bt-del DO:
     DEFINE VARIABLE lConf AS LOGICAL NO-UNDO.
-    MESSAGE "Confirma a eliminaï¿½ï¿½o do pedido " pedidos.CodPedido "?" 
-        UPDATE lConf VIEW-AS ALERT-BOX QUESTION BUTTONS YES-NO TITLE "Eliminaï¿½ï¿½o".
+    MESSAGE "Confirma a eliminação do pedido " pedidos.CodPedido "?" 
+        UPDATE lConf VIEW-AS ALERT-BOX QUESTION BUTTONS YES-NO TITLE "Eliminação".
     IF lConf THEN DO:
         FIND bPed WHERE bPed.CodPedido = pedidos.CodPedido EXCLUSIVE-LOCK NO-ERROR.
         IF AVAILABLE bPed THEN DO:
@@ -239,11 +260,20 @@ ON 'choose' OF bt-del DO:
     RUN pimostrar.
 END.
 
-ON 'leave' OF pedidos.CodCliente DO:
+ON VALUE-CHANGED OF cbo-CodCliente IN FRAME f-pedidos DO:
     DEFINE VARIABLE lValid AS LOGICAL NO-UNDO.
-    RUN piValidaClientes (INPUT INTEGER(pedidos.CodCliente:SCREEN-VALUE), 
-                          OUTPUT lValid).
+    DEFINE VARIABLE iSelected AS INTEGER NO-UNDO.
+    
+    ASSIGN iSelected = INTEGER(cbo-CodCliente:SCREEN-VALUE IN FRAME f-pedidos) NO-ERROR.
+    IF ERROR-STATUS:ERROR THEN DO:
+        MESSAGE "Selecione um cliente válido." VIEW-AS ALERT-BOX ERROR.
+        ASSIGN cbo-CodCliente:SCREEN-VALUE IN FRAME f-pedidos = "0".
+        RETURN NO-APPLY.
+    END.
+    
+    RUN piValidaClientes (INPUT iSelected, OUTPUT lValid).
     IF NOT lValid THEN DO:
+        ASSIGN cbo-CodCliente:SCREEN-VALUE IN FRAME f-pedidos = "0".
         RETURN NO-APPLY.
     END.
     DISPLAY 
@@ -257,11 +287,19 @@ END.
 
 ON 'choose' OF bt-save DO:
     DEFINE VARIABLE lValid AS LOGICAL NO-UNDO.
-    RUN piValidaClientes (INPUT INTEGER(pedidos.CodCliente:SCREEN-VALUE), 
-                          OUTPUT lValid).
+    DEFINE VARIABLE iCodCliente AS INTEGER NO-UNDO.
+    
+    ASSIGN iCodCliente = INTEGER(cbo-CodCliente:SCREEN-VALUE IN FRAME f-pedidos) NO-ERROR.
+    IF ERROR-STATUS:ERROR OR iCodCliente = 0 THEN DO:
+        MESSAGE "Selecione um cliente válido." VIEW-AS ALERT-BOX ERROR.
+        RETURN NO-APPLY.
+    END.
+    
+    RUN piValidaClientes (INPUT iCodCliente, OUTPUT lValid).
     IF NOT lValid THEN DO:
         RETURN NO-APPLY.
     END.
+    
     IF cAction = "add" THEN DO:
         CREATE bPed.
         ASSIGN bPed.CodPedido = INPUT pedidos.CodPedido.
@@ -269,13 +307,16 @@ ON 'choose' OF bt-save DO:
     IF cAction = "mod" THEN DO:
         FIND FIRST bPed WHERE bPed.CodPedido = pedidos.CodPedido EXCLUSIVE-LOCK NO-ERROR.
     END.
+    
     ASSIGN 
         bPed.DataPedido = INPUT pedidos.DataPedido
-        bPed.CodCliente = INPUT pedidos.CodCliente
+        bPed.CodCliente = iCodCliente
         bPed.Observacao = INPUT pedidos.Observacao.
+    
     RUN piHabilitaBotoes (INPUT TRUE).
     RUN piHabilitaCampos (INPUT FALSE).
     RUN piOpenQuery.
+    
     IF cAction = "add" THEN DO:
         GET LAST qPedidos.
         RUN pimostrar.
@@ -291,7 +332,7 @@ END.
 ON 'choose' OF bt-rel DO:
     DEFINE VARIABLE cArq AS CHARACTER NO-UNDO.
     DEFINE FRAME f-cab HEADER
-        "Relatorio de pedidos" AT 1
+        "Relatório de pedidos" AT 1
         TODAY FORMAT "99/99/9999" TO 130
         WITH PAGE-TOP WIDTH 132.
     DEFINE FRAME f-dados
@@ -315,6 +356,7 @@ ON 'choose' OF bt-rel DO:
     OS-COMMAND NO-WAIT VALUE("notepad.exe " + cArq).
 END.
 
+RUN piPreencheComboClientes.
 RUN piOpenQuery.
 RUN piHabilitaBotoes (INPUT TRUE).
 APPLY "choose" TO bt-pri.
@@ -332,10 +374,10 @@ END PROCEDURE.
 
 PROCEDURE pimostrar:
     IF AVAILABLE pedidos THEN DO:
+        ASSIGN cbo-CodCliente:SCREEN-VALUE IN FRAME f-pedidos = STRING(pedidos.CodCliente).
         DISPLAY 
             pedidos.CodPedido
             pedidos.DataPedido
-            pedidos.CodCliente
             pedidos.Observacao
             clientes.NomeCliente
             clientes.CodEndereco
@@ -348,6 +390,7 @@ PROCEDURE pimostrar:
     ELSE DO:
         CLOSE QUERY qItens.
         CLEAR FRAME f-pedidos.
+        ASSIGN cbo-CodCliente:SCREEN-VALUE IN FRAME f-pedidos = "0".
     END.
 END PROCEDURE.
 
@@ -388,7 +431,7 @@ PROCEDURE piHabilitaCampos:
     DO WITH FRAME f-pedidos:
         ASSIGN 
             pedidos.DataPedido:SENSITIVE = pEnable
-            pedidos.CodCliente:SENSITIVE = pEnable
+            cbo-CodCliente:SENSITIVE = pEnable
             pedidos.Observacao:SENSITIVE = pEnable.
     END.
 END PROCEDURE.
@@ -398,7 +441,7 @@ PROCEDURE piValidaClientes:
     DEFINE OUTPUT PARAMETER pValid AS LOGICAL NO-UNDO INITIAL NO.
     FIND FIRST bClientes WHERE bClientes.CodCliente = pCodCliente NO-LOCK NO-ERROR.
     IF NOT AVAILABLE bClientes THEN DO:
-        MESSAGE "Cliente " pCodCliente " nï¿½o existe!" VIEW-AS ALERT-BOX ERROR.
+        MESSAGE "Cliente " pCodCliente " não existe!" VIEW-AS ALERT-BOX ERROR.
         ASSIGN pValid = NO.
     END.
     ELSE 
